@@ -27,3 +27,35 @@
 **타임리프의 체크 확인**
 - checked="checked" : 체크 박스를 선택 후 저장하면 html에 checked 속성이 추가된 것이 확인 가능
 - th:field가 체크 박스 값이 true일 경우 체크로 자동 
+
+# v1.7 3/17
+# @ModelAttribute 특별한 사용법
+- 모든 폼에서 객체를 체크 박스에 반복해서 보여줘야할 떄 사용
+- 기존의 경우 각각의 컨트롤러에서 model.addAttribute(...)를 사용해서 체크 박스를 구성하는 데이터를 넣어줘야함
+- @ModelAttribute를 사용하여 별도에 메서드에 적용 시 해당 컨트롤러를 요청할 때 반환 값이 자동으로 모델에 담기게 됨
+
+    @ModelAttribute("regions")
+    public Map<String, String> regions() {
+     Map<String, String> regions = new LinkedHashMap<>();
+     regions.put("SEOUL", "서울");
+     regions.put("BUSAN", "부산");
+     regions.put("JEJU", "제주");
+     return regions;
+    }
+    
+# 체크 박스 - 멀티
+- input type="checkbox" th:field="* {regions}" th:value="${region.key}
+  - th:field에 속성을 넣으면 th:value에 들어가는 region.key 값과 비교해서 값이 포함되어있을 경우 checked가 추가. 즉, 자동으로 value와 비교해서 checked 여부를 설정
+-  th:for="${#ids.prev('regions')}
+  - 멀티 체크박스는 여러 체크박스가 생성되는데, name 속성은 모두 같아도 되지만 id는 유일해야 함.
+  - 타임리프는 ids 프로퍼티를 제공하고, ids는 반복하는 요소의 인덱스로 1,2,3 의 숫자를 붙여줌
+- id 가 checkbox에서 동적으로 생성된 region1, region2, region3에 맞춰 순서대로 입력됨
+
+# 라디오 버튼
+- 여러 선택지 중에 하나를 선택할 떄(ENUM) 사용 가능
+- 체크 박스는 수정 시 체크를 헤제하면 false 값이 넘어가지만, 라디오 버튼 경우 수정 시에도 필수적으로 하나를 선택하도록 되어있음
+- type="radio" th:field="* {itemType}" th:value="${type.name()}" class="form-check-input"
+
+# 셀렉트 박스
+- type="radio" th:field="* {itemType}" th:value="${type.name()}" class="form-check-input"
+- th:each="deliveryCode : ${deliveryCodes}" th:value="${deliveryCode.code}" th:text="${deliveryCode.displayName}"
