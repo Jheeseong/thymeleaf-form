@@ -59,3 +59,5 @@
 # 셀렉트 박스
 - type="radio" th:field="* {itemType}" th:value="${type.name()}" class="form-check-input"
 - th:each="deliveryCode : ${deliveryCodes}" th:value="${deliveryCode.code}" th:text="${deliveryCode.displayName}"
+
+# v1.8 3/18
