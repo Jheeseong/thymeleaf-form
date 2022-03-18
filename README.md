@@ -61,3 +61,36 @@
 - th:each="deliveryCode : ${deliveryCodes}" th:value="${deliveryCode.code}" th:text="${deliveryCode.displayName}"
 
 # v1.8 3/18
+# 메시지
+- html 뷰에 보이는 특정 단어를 보다 쉽게 변경 가능
+- 기존에는 HTML 파일에 메시지가 하드코딩 되어 있음, label에 있는 단어를 변경 시 다른 화면들을 찾아가면서 모두 변경해야함
+- 다양한 메시지를 한 곳에서 관리하는 기능을 메시지 기능이라 정의
+- messages.properties 라는 관리용 파일을 생성
+
+      item=상품
+      item.id=상품 ID
+      item.itemName=상품명
+      item.price=가격
+      item.quantity=수량
+      
+- 각 HTML들은 다음의 해당 데이터를 key 값으로 불러서 사용
+  - label for="itemName" th:text="#{item.itemName}"
+
+# 국제화
+- 메시지에서 설정한 메시지 파일(message.properties)을 각 나라 별로 관리하여 서비스 국제화 가능
+- ex) **messages_en.propertis**
+
+      item=Item
+      item.id=Item IDitem.itemName=Item Name
+      item.price=price
+      item.quantity=quantity
+      
+- ex) **messages_ko.propertis**
+
+      item=상품
+      item.id=상품 ID
+      item.itemName=상품명
+      item.price=가격
+      item.quantity=수량
+      
+- HTTP accept-language 헤더 값을 이용하여 한국에서의 접근인지 영어에서의 접근인지 파악하여 선택
