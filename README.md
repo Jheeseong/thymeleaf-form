@@ -94,3 +94,54 @@
       item.quantity=수량
       
 - HTTP accept-language 헤더 값을 이용하여 한국에서의 접근인지 영어에서의 접근인지 파악하여 선택
+
+# v1.9 3/19
+**MessageSource 인터페이스**
+
+    public interface MessageSource {
+      
+      String getMessage(String code, @Nullable Object[] args, @Nullable String defaultMessage, Locale locale);
+      String getMessage(String code, @Nullable Object[] args, Locale locale) throws NoSuchMessageException;
+      
+- 코드를 포함한 일부 파라미터로 메시지를 읽어오는 기능을 제공
+
+**MessageSource TestCode**
+
+    @Autowired MessageSource ms;
+    
+    @Test
+    void helloMessage() {
+        String result = ms.getMessage("hello", null, null);
+        System.out.println("result = " + result);
+    }
+    
+- message locale 정보가 없으면 basename에서 설정한 기본 메시지 파일을 조회(messages.properties 파일에서 데이터 조회) 
+
+**MessageSource TestCode(메시지가 없는 경우, 기본 메시지)**
+
+    @Test
+    void notFoundMessageCode() {
+        assertThatThrownBy(() -> ms.getMessage("no_code", null, null))
+                .isInstanceOf(NoSuchMessageException.class);
+    }
+
+    @Test
+    void notFoundMessageCodeDefaultMessage() {
+        String result = ms.getMessage("no_code", null, "기본 메시지", null);
+        System.out.println("result = " + result);
+    }
+    
+- 지정한 메시지가 없는 경우 NoSuchMessageException이 발생
+- 메시지가 없어도 기본 베시지(defaultMessage)를 사용시 기본 메시지가 
+
+**MessageSource TestCode(매개변수 사용)**
+
+    @Test
+    void argumentMessage() {
+        String result = ms.getMessage("hello.name", new Object[]{"Spring"}, null);
+        assertThat(result).isEqualTo("안녕 Spring");
+    }
+    
+- messages.properties에서 설정한 hello.name=안녕 {0} 에서 {0}부분에 매개변수를 전달하여 치환이 가능
+- 이 코드에선 Spring 단어를 매개변수로 전달
+- 결과 : 안녕 Spring
