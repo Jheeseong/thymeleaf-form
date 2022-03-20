@@ -145,3 +145,50 @@
 - messages.properties에서 설정한 hello.name=안녕 {0} 에서 {0}부분에 매개변수를 전달하여 치환이 가능
 - 이 코드에선 Spring 단어를 매개변수로 전달
 - 결과 : 안녕 Spring
+
+# v1.10 3/20
+**국제화 파일 선택**
+- locale 정보를 기반으로 국제화 파일을 선택
+- locale en_US의 경우 messages_en_US -> messages_en -> messages 순서로 진행
+- locale에 맞추어 구체적인 것을 서치 후, 디폴트를 검색
+
+**MessageSourceTest-국제화 파일 선택1**
+
+    @Test
+    void defaultLang() {
+     assertThat(ms.getMessage("hello", null, null)).isEqualTo("안녕");
+     assertThat(ms.getMessage("hello", null, Locale.KOREA)).isEqualTo("안녕");
+    }
+    
+**MessageSourceTest-국제화 파일 선택2**
+
+    @Test
+    void enLang() {
+     assertThat(ms.getMessage("hello", null, Locale.ENGLISH)).isEqualTo("hello");
+    }
+    
+# 웹 애플리케이션에 메시지 적용
+**타임리프 메시지 적용**
+- #{...} 사용 시 메시지 조회가 편리하게 가능
+  - ex) th:text="#{label.item}"
+
+**messages.properties**
+
+    label.item=상품
+    label.item.id=상품 ID
+    label.item.itemName=상품명
+    label.item.price=가격
+    label.item.quantity=수량
+    page.items=상품 목록
+    page.item=상품 상세
+    page.addItem=상품 등록
+    page.updateItem=상품 수정button.save=저장
+    button.cancel=취소
+    
+# 웹 애플리케이션 국제화 적용
+**웹으로 확인**
+- 웹 브라우저의 언어 설정 값 변경 시 accept-Lanuage의 값이 변경
+- 메시지 기능은 locale 정보를 알아야 언어 선택이 가능, 스프링은 기본으로 Accept-Language 헤더 값을 사용
+**LocaleResolver**
+- 스프링은 Locale 선택 방식을 변경할 수 있도록 LocaleResolver라는 인터페이스 제공.
+- 스프링 부트는 기본으로 Accept-Language 활용하는 AcceptHeaderLocaleResolver 사용
